@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <!--[if IE]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宠物托管服务管理系统</title>
+    <meta name="description" content=""/>
+    <meta name="author" content="templatemo">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="./favicon.png"/>
+    <!-- Bootstrap -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Camera -->
+    <link href="/css/camera.css" rel="stylesheet">
+    <!-- Template  -->
+    <link href="/css/templatemo_style.css" rel="stylesheet">
+</head>
+<body>
+<div id="templatemo_banner_top" class="container_wapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <p class="right" th:if="${session.user!=null&&session.user.status==0}"><a
+                        th:href="'/deposit/mydeposit/?userid='+${session.user.id}">我的托管</a> <span
+                        class="glyphicon glyphicon-home"></span></p>
+                <p class="right" th:if="${session.user!=null&&session.user.status==1}"><a
+                        href="/user/findAll">后台主页</a> <span
+                        class="glyphicon glyphicon-home"></span></p>
+            </div>
+            <div class="col-md-4">
+                <p class="right" th:if="${session.user==null}"><a href="/user/login">用户登录</a> <span
+                        class="glyphicon glyphicon-user"></span></p>
+                <p class="right" th:if="${session.user!=null}">
+                    <th:block th:text="${session.user.username}"></th:block>
+                    <span class="glyphicon glyphicon-user"></span></p>
+                <!--                    <p class="right" th:if="${session.user!=null}"><a th:href="'/deposit/mydeposit/?username='+${session.user.username}">我的托管</a> <span class="glyphicon glyphicon-user"></span></p>-->
+            </div>
+        </div>
+    </div>
+</div>
+<div id="templatemo_banner_logo" class="container_wapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-md-8 col-md-offset-4">
+                <!--                    <img src="/img/templatemo_logo.png" alt="logo" />-->
+                <h1 id="title"><a href="#">欢迎来到宠物托管中心！</a></h1><br/><br/><br/>
+                <!--                    <span>Free HTML5 Template</span>-->
+            </div>
+        </div>
+    </div>
+</div>
+<div id="templatemo_banner_slide" class="container_wapper">
+    <div class="camera_wrap camera_emboss" id="camera_slide">
+        <div data-src="/img/pet/2.jpg">
+            <div class="camera_caption fadeFromLeft camera_effected">
+                <div class="container">
+                    <div class="col-md-6">
+                        <h1>托管人员</h1>
+                        <p>给您的宠物提供最贴心的服务！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-src="/img/pet/timg4.jpg">
+            <div class="camera_caption fadeFromLeft camera_effected">
+                <div class="container">
+                    <div class="col-md-6">
+                        <h1>宠物医生</h1>
+                        <p>为您的宠物健康提供切实保障！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-src="/img/pet/chongwudian3.png">
+            <div class="camera_caption fadeFromLeft camera_effected">
+                <div class="container">
+                    <div class="col-md-6">
+                        <h1>托管环境</h1>
+                        <p>让您的爱宠感受格调高雅的环境！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-src="/img/pet/timg5.png">
+            <div class="camera_caption fadeFromLeft camera_effected">
+                <div class="container">
+                    <div class="col-md-6">
+                        <h1>宠物玩耍</h1>
+                        <p>让您的爱宠尽情地放飞自我！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- #camera_wrap_3 -->
+</div>
+<!--    <div class="copyrights">Collect from <a href="http://www.cssmoban.com/" >网页模板</a></div>-->
+<div id="templatemo_footer" class="container_wapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <!--                    <p>Copyright &copy; 2014.Company name All rights reserved.<a target="_blank" href="http://www.huiyi8.com/moban/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a></p>-->
+                <p>我们的电话： 18593273424</p>
+                <p>我们的邮箱： lkp0210@163.com</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.easing.1.3.js"></script>
+<script src="/js/jquery.mobile.customized.min.js"></script>
+<script src="/js/camera.min.js"></script>
+<script src="/js/jquery.singlePageNav.min.js"></script>
+<script src="/js/templatemo_script.js"></script>
+</body>
+</html>

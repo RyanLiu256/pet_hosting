@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>用户注册</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/plugins/ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="/plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet" href="/plugins/iCheck/square/blue.css">
+</head>
+
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <a href="#">宠物托管服务管理系统</a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="login-box-body">
+        <p class="login-box-msg">用户注册</p>
+        <form action="/user/register" method="post" id="registerForm">
+            <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="用户名" name="username" id="username">
+                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="账号,用于登录系统" name="account" id="account">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" class="form-control" placeholder="密码" name="password" id="password">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" class="form-control" placeholder="确认密码" id="password1">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="number" class="form-control" placeholder="联系电话" name="phone" id="phone">
+                <span class="glyphicon glyphicon-earphone form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="地址" name="address" id="address">
+                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="email" class="form-control" placeholder="电子邮箱" name="email" id="email">
+                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="radio" name="gender" value="1" checked="checked">男
+                <input type="radio" name="gender" value="0">女
+            </div>
+            <div class="form-group has-feedback">
+                <input type="hidden" class="form-control" name="status" value="0">
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <a href="javascript:history.back(-1)" class="btn btn-primary btn-block btn-flat">返回</a>
+                </div>
+                <div class="col-xs-6">
+                    <button type="button" id="registerbtn" class="btn btn-info btn-block btn-flat">注册</button>
+                </div>
+            </div>
+        </form>
+        <br>
+        <span style="color: #9f0914" th:text="${registerError}"/>
+        <span style="color: #9f0914" th:text="${exits}"/>
+    </div>
+    <!-- /.login-box-body -->
+</div>
+<!-- iCheck -->
+<script src="/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<script src="/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="/plugins/iCheck/icheck.min.js"></script>
+<script>
+    $(function () {
+        $("#registerbtn").click(function () {
+            var username = $("#username");
+            var account = $("#account");
+            var password = $("#password");
+            var password1 = $("#password1");
+            var gender = $("#gender");
+            var phone = $("#phone");
+            var address = $("#address");
+            var email = $("#email");
+            var msg = "";
+            // var patt = /^[A-Za-z0-9]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$/;
+            //密码正则
+            var pwdpatt = /^[a-zA-Z][a-zA-Z0-9_]*$/;
+            //邮箱正则
+            var emailpatt = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+            //用户名正则
+            //var usernamepatt =/^[\u4e00-\u9fa5]{2,4}$/;
+            var usernamepatt = /^[a-zA-Z_\u4e00-\u9fa5][a-zA-Z0-9_\u4e00-\u9fa5]*$/;
+            if (username.val() == "") {
+                msg = "请输入用户名!";
+                username.focus();
+            } else if (username.val().length < 2 | username.val().length > 10 | !usernamepatt.test(username.val())) {
+                msg = "用户名只能包含中文、字母、数字和下划线，且不能以数字开头，长度为2-10！";
+                username.focus();
+            } else if (account.val() == "") {
+                msg = "请输入账号!";
+                account.focus();
+            } else if (account.val().length < 5 | account.val().length > 10 | !pwdpatt.test(account.val())) {
+                msg = "账号长度须为5-10个字符，且以字母开头，只能包含字母、数字、下划线！";
+                account.focus();
+            } else if (password.val() == "") {
+                msg = "请输入密码!";
+                password.focus();
+            } else if (password.val().length < 5 | password.val().length > 12 | !pwdpatt.test(password.val())) {
+                msg = "密码长度须为5-12个字符，且以字母开头，只能包含字母、数字、下划线！";
+                password.focus();
+            } else if (password.val() != password1.val()) {
+                msg = "两次输入的密码不一致!";
+                password1.focus();
+            } else if (phone.val().length != 11) {
+                msg = "请输入11位数字的电话号码!";
+                phone.focus();
+            }else if (address.val()== "") {
+                msg = "请输入地址!";
+                address.focus();
+            } else if (!emailpatt.test(email.val())) {
+                msg = "请输入正确的邮箱格式!";
+                email.focus();
+            }
+            if (msg != "") {
+                alert(msg);
+            } else {
+                $("#registerForm").submit();
+            }
+        })
+    });
+</script>
+</body>
+</html>

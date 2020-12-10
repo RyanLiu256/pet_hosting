@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.guat.mapper.PetFoodMapper">
+
+    <select id="selectByPage" resultType="PetFood">
+        SELECT * FROM tb_petfood
+    </select>
+
+    <select id="selectAll" resultType="PetFood">
+        SELECT * FROM tb_petfood
+    </select>
+
+    <select id="selectById" parameterType="Integer" resultType="PetFood">
+        SELECT * FROM tb_petfood WHERE pid = #{id}
+    </select>
+
+    <update id="update" parameterType="PetFood">
+        UPDATE tb_petfood SET brand = #{brand}, price = #{price} WHERE pid = #{pid}
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        DELETE FROM tb_petfood WHERE pid = #{id}
+    </delete>
+
+    <insert id="add" parameterType="PetFood">
+        INSERT INTO tb_petfood (brand,price) VALUES (#{brand},#{price})
+    </insert>
+
+</mapper>

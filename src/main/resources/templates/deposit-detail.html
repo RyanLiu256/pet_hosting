@@ -1,0 +1,386 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>宠物托管服务系统</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/metisMenu.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/dataTables.bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{/css/sb-admin-2.css}" rel="stylesheet"/>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/boot-crm.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        .disableClick {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        #pet_img {
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <!-- 导航栏部分 -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation"
+         style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#" th:if="${session.user.status==1}">宠物托管服务后台管理系统 </a>
+            <a class="navbar-brand" href="#" th:if="${session.user.status==0}">宠物托管服务管理系统 </a>
+        </div>
+        <!-- 导航栏右侧图标部分 -->
+        <ul class="nav navbar-top-links navbar-right">
+            <!-- 用户信息和系统设置 start -->
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
+                    class="fa fa-user fa-fw"></i>
+                <i class="fa fa-caret-down"></i>
+            </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a href="#"><i class="fa fa-user fa-fw"> </i>用户：<span th:text="${session.user.username}"/>
+                    </a></li>
+                    <li class="divider"></li>
+                    <li><a href="/user/logout"> <i class="fa fa-sign-out fa-fw"></i>退出登录</a></li>
+                </ul>
+            </li>
+            <!-- 用户信息和系统设置结束 -->
+        </ul>
+        <!-- 左侧显示列表部分 start-->
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==0}">
+                <ul class="nav">
+                    <li><a href="/"> <i class="fa fa-edit fa-fw"></i> 首页</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/user/findAll"> <i class="fa fa-edit fa-fw"></i> 用户管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/deposit/findAll"> <i class="fa fa-edit fa-fw"></i> 托管管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav">
+                    <li><a th:href="'/breeds/findAll'"> <i class="fa fa-edit fa-fw"></i> 宠物品种管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav">
+                    <li><a th:href="'/petfood/findAll'"> <i class="fa fa-edit fa-fw"></i> 宠物粮食管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav">
+                    <li><a th:href="'/service/findAll'"> <i class="fa fa-edit fa-fw"></i> 宠物服务管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav">
+                    <li><a th:href="'/keeper/findAll'"> <i class="fa fa-edit fa-fw"></i> 托管负责人管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/findBreedsByMonth"> <i class="fa fa-edit fa-fw"></i> 宠物品种托管个数及收益统计图</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/findPetfoodByMonth"> <i class="fa fa-edit fa-fw"></i> 宠物粮食被选次数及收益统计图</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/findServiceByMonth"> <i class="fa fa-edit fa-fw"></i> 宠物服务被选次数及收益统计图</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/findByYear"> <i class="fa fa-edit fa-fw"></i> 每月收益统计图</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" >
+                <ul class="nav">
+                    <li><a href="/deposit/commentlist"> <i class="fa fa-edit fa-fw"></i> 用户评价</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/tobackup"> <i class="fa fa-edit fa-fw"></i> 数据库备份</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==0}">
+                <ul class="nav">
+                    <li><a th:href="'/deposit/mydeposit?userid='+${session.user.id}" class="active"> <i
+                            class="fa fa-edit fa-fw"></i> 我的托管</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==0}">
+                <ul class="nav">
+                    <li><a href="#" data-toggle="modal"
+                           data-target="#addDepositDialog"> <i class="fa fa-edit fa-fw"></i> 我要托管</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- 左侧显示列表部分 end-->
+    </nav>
+    <!-- 列表查询部分  start-->
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">托管结算</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div>
+                    <p class="lead">用户ID：<span th:text="${deposit.userid}"/></p>
+                    <p class="lead">用户名：<span th:text="${deposit.username}"/></p>
+                    <p class="lead">宠物昵称：<span th:text="${deposit.petname}"/></p>
+                    <p class="lead">宠物年龄：<span th:text="${deposit.age}+'&nbsp;周岁'"/></p>
+                    <p class="lead">宠物体重：<span th:text="${deposit.weight}+'&nbsp;kg'"/></p>
+                    <p class="lead">是否有免疫证明：<span th:text="${deposit.isproveStr}"/></p>
+                    <p class="lead">宠物品种：<span
+                            th:text="${deposit.breeds.species}+ '&nbsp;&nbsp;&nbsp;' + ${deposit.breeds.breedPrice}+'元/天'"/>
+                    </p>
+                    <p class="lead">宠物粮食品牌：<span
+                            th:text="${deposit.petFood.brand}+ '&nbsp;&nbsp;&nbsp;' + ${deposit.petFood.price}+'元/天'"/>
+                    </p>
+                    <p class="lead">入住时间：<span th:text="${deposit.startTimeStr}"/></p>
+                    <p class="lead">领回时间：<span th:text="${deposit.endTimeStr}"/></p>
+                    <p class="lead">托管天数：<span th:text="${deposit.dayCount}"/></p>
+                    <p class="lead">所选服务：<span th:each="service:${services}"
+                                               th:text="${service.serviceName+'('+service.price+'元/天)'} + '&nbsp;&nbsp;&nbsp;&nbsp;'"/>
+                    </p>
+                    <p class="lead">托管负责人信息：<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        姓名：
+                        <th:block th:text="${deposit.keeper.name+'(编号：'+deposit.keeper.kid+')'}"></th:block>
+                        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        性别：
+                        <th:block th:text="${deposit.keeper.sexStr}"></th:block>
+                        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        联系电话：
+                        <th:block th:text="${deposit.keeper.phone}"></th:block>
+                        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        描述：
+                        <th:block th:text="${deposit.keeper.description}"></th:block>
+                        <br>
+                    </p>
+                    <p class="lead">托管总费用：<span th:text="${deposit.totalPrice}"/></p>
+                    <p class="lead">托管状态：
+                        <span th:text="${deposit.stateStr}" th:if="${deposit.state!=2}"/>
+                        <span th:text="${deposit.stateStr+'(原因：'+deposit.reason+')'}" th:if="${deposit.state==2}"/>
+                        <button data-toggle="modal" data-target="#addComment"
+                           class="btn btn-default" th:if="${session.user.status==0 && deposit.state==3 && comment == null}">评价
+                        </button>
+                        <a th:href="'/deposit/seeComment?cid='+${comment.cid}" th:if="${comment!=null}">查看评价</a>
+                    </p>
+                    <p class="lead">付款状态：<span th:text="${deposit.ispayStr}"/></p>
+                    <div class="col-xs-6">
+                        <!--                        <a href="/deposit/topay" class="btn btn-default" th:if="${deposit.ispay == 0 && session.user.status ==0}">去支付</a>-->
+                        <a href="javascript:history.back(-1)" class="btn btn-default">返回</a>
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 修改添加评论模态框 -->
+<div class="modal fade" id="addComment" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">评价</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="add_comment_form">
+<!--                    <input type="hidden" id="edit_myid" name="id"/>-->
+                    <div class="form-group">
+<!--                        <label for="edit_myusername" class="col-sm-2 control-label">用户名</label>-->
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="comment" name="comment" rows="5" style="min-width: 100%"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary"
+                        th:onclick="'javascript:addComment('+${deposit.id}+')'">提交
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--添加托管信息模态框-->
+<div class="modal fade" id="addDepositDialog" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">托管信息</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="add_deposit_form">
+                    <input type="hidden" name="username" th:value="${session.user.username}">
+                    <div class="form-group">
+                        <label for="add_petname" class="col-sm-2 control-label">宠物昵称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="add_petname" name="petname"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"> 宠物品种</label>
+                        <div class="col-sm-10">
+                            <select id="add_breeds" name="breeds.bid" class="form-control">
+                                <option value="">--请选择--</option>
+                                <option th:each="breeds : ${session.breeds}" th:value="${breeds.bid}"
+                                        th:text="${breeds.species+'&nbsp;&nbsp;&nbsp;&nbsp;'+breeds.breedPrice+'(元/天)'}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"> 宠物粮食</label>
+                        <div class="col-sm-10">
+                            <select id="add_petfood" name="petFood.pid" class="form-control">
+                                <option value="">--请选择--</option>
+                                <option th:each="petFood : ${session.petFoods}" th:value="${petFood.pid}"
+                                        th:text="${petFood.brand+'&nbsp;&nbsp;&nbsp;&nbsp;'+petFood.price+'(元/天)'}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"> 宠物负责人</label>
+                        <div class="col-sm-10">
+                            <select id="add_keeper" name="keeper.kid" class="form-control">
+                                <option value="">--请选择--</option>
+                                <option th:each="keeper : ${session.keepers}" th:value="${keeper.kid}"
+                                        th:text="${keeper.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="add_startTime" class="col-sm-2 control-label"> 入住时间</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="add_startTime" name="startTime"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="add_endTime" class="col-sm-2 control-label"> 领回时间</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="add_endTime" name="endTime"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="services" class="col-sm-2 control-label">选择服务</label>
+                        <div class="col-sm-10">
+                            <input type="checkbox" id="services" th:each="service : ${session.services}"
+                                   th:name="'services['+${service.id}+'].id'"
+                                   th:value="${service.id}"
+                                   th:text="${service.serviceName}"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" th:onclick="addDeposit()">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/metisMenu.min.js"></script>
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap.min.js"></script>
+<script src="/js/sb-admin-2.js"></script>
+<script type="text/javascript">
+
+    function addComment(id) {
+        var msg = "";
+        var comment = $("#comment").val();
+        if (comment=="" | comment.length>255){
+            msg = "请输入255个字符以内的评价！";
+        }
+        if (msg!=""){
+            alert(msg);
+        }else {
+            $.ajax({
+                async:false,
+                type:"post",
+                url:"/deposit/addComment",
+                data:{"id":id,"comment":comment},
+                success:function (data) {
+                    if (data == "ok"){
+                        alert("评价成功！");
+                        location.reload();
+                    }else {
+                        alert("评价失败！");
+                    }
+                }
+            });
+        }
+    }
+
+    //申请托管
+    function addDeposit() {
+        var msg = "";
+        var petname = $("#add_petname");
+        var breeds = $("#add_breeds");
+        var petfood = $("#add_petfood");
+        var keeper = $("#add_keeper");
+        var startTime = $("#add_startTime");
+        var endTime = $("#add_endTime");
+        var startTimeDate = new Date(startTime.val().replace("-", "/").replace("-", "/"));
+        var endTimeDate = new Date(endTime.val().replace("-", "/").replace("-", "/"));
+        if (petname.val() == "" | petname.val().length > 6) {
+            msg = "请输入6个字符以内的宠物昵称！";
+        } else if (breeds.val() == "") {
+            msg = "请选择宠物品种！";
+        } else if (petfood.val() == "") {
+            msg = "请选择宠物粮食品牌！";
+        } else if (keeper.val() == "") {
+            msg = "请选择托管负责人！";
+        } else if (startTime.val() == "") {
+            msg = "请选择入住时间！";
+        } else if (endTime.val() == "") {
+            msg = "请选择领回时间！";
+        } else if (startTimeDate > endTimeDate) {
+            msg = "入住时间不能在领回时间之后！";
+        }
+        if (msg != "") {
+            alert(msg);
+        } else {
+            $.post("/deposit/addDeposit", $("#add_deposit_form").serialize(), function (date) {
+                if (date == "ok") {
+                    alert("申请托管成功！");
+                    window.location.reload();
+                } else {
+                    alert("申请托管失败！");
+                    window.location.reload();
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>

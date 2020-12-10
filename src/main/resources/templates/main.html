@@ -1,0 +1,561 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>宠物托管服务系统</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/metisMenu.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/dataTables.bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{/css/sb-admin-2.css}" rel="stylesheet"/>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/boot-crm.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        .disableClick {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <!-- 导航栏部分 -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation"
+         style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">宠物托管服务后台管理系统 </a>
+        </div>
+        <!-- 导航栏右侧图标部分 -->
+        <ul class="nav navbar-top-links navbar-right">
+<!--            <div class="btn-group" th:if="${session.user.status==1}">-->
+<!--                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"-->
+<!--                        aria-haspopup="true" aria-expanded="false">-->
+<!--                    按年及月显示各项托管数据 <span class="caret"></span>-->
+<!--                </button>-->
+<!--                <ul class="dropdown-menu">-->
+<!--                    <li><a href="/system/findBreedsByMonth">宠物品种</a></li>-->
+<!--                    <li><a href="/system/findPetfoodByMonth">宠物粮食</a></li>-->
+<!--                    <li><a href="/system/findServiceByMonth">宠物服务</a></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--            <div class="btn-group" th:if="${session.user.status==1}">-->
+<!--                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"-->
+<!--                        aria-haspopup="true" aria-expanded="false">-->
+<!--                    商品管理 <span class="caret"></span>-->
+<!--                </button>-->
+<!--                <ul class="dropdown-menu">-->
+<!--                    <li><a href="/breeds/findAll">宠物品种</a></li>-->
+<!--                    <li><a href="/petfood/findAll">宠物粮食</a></li>-->
+<!--                    <li><a href="/service/findAll">宠物服务</a></li>-->
+<!--                    <li><a href="/keeper/findAll">托管负责人</a></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+            <!-- 用户信息和系统设置 start -->
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
+                    class="fa fa-user fa-fw"></i>
+                <i class="fa fa-caret-down"></i>
+            </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#editMyinfoDialog" th:onclick="'editMyinfo('+${session.user.id}+')'">
+                            <i class="fa fa-user fa-fw"> </i>用户：<span th:text="${session.user.username}" />
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#modifyPasswordDialog"> <i
+                                class="fa fa-user fa-fw"></i>修改密码</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="/user/logout"> <i class="fa fa-sign-out fa-fw"></i>退出登录</a>
+                    </li>
+                </ul>
+            </li>
+            <!-- 用户信息和系统设置结束 -->
+        </ul>
+        <!-- 左侧显示列表部分 start-->
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/user/findAll" class="active"> <i class="fa fa-edit fa-fw"></i> 用户管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a th:href="'/deposit/findAll'"> <i class="fa fa-edit fa-fw"></i> 托管管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav">
+                    <li><a th:href="'/breeds/findAll'"> <i class="fa fa-edit fa-fw"></i> 宠物品种管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav">
+                    <li><a th:href="'/petfood/findAll'"> <i class="fa fa-edit fa-fw"></i> 宠物粮食管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav">
+                    <li><a th:href="'/service/findAll'"> <i class="fa fa-edit fa-fw"></i> 宠物服务管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav">
+                    <li><a th:href="'/keeper/findAll'"> <i class="fa fa-edit fa-fw"></i> 托管负责人管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/findBreedsByMonth"> <i class="fa fa-edit fa-fw"></i> 宠物品种托管个数及收益统计图</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/findPetfoodByMonth"> <i class="fa fa-edit fa-fw"></i> 宠物粮食被选次数及收益统计图</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/findServiceByMonth"> <i class="fa fa-edit fa-fw"></i> 宠物服务被选次数及收益统计图</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/findByYear"> <i class="fa fa-edit fa-fw"></i> 每月收益统计图</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" >
+                <ul class="nav">
+                    <li><a href="/deposit/commentlist"> <i class="fa fa-edit fa-fw"></i> 用户评价</a></li>
+                </ul>
+            </div>
+<!--            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">-->
+<!--                <ul class="nav">-->
+<!--                    <li><a href="/system/analysis" > <i class="fa fa-edit fa-fw"></i> 托管概况</a></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/tobackup"> <i class="fa fa-edit fa-fw"></i> 数据库备份</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- 左侧显示列表部分 end-->
+    </nav>
+    <!-- 学生列表查询部分  start-->
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">用户管理</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form-inline" method="get" action="/user/findAll">
+                    <div class="form-group">
+                        <label>用户ID</label> <input type="number" class="form-control" th:value="${id}" name="id"/>
+                    </div>
+                    <div class="form-group">
+                        <label>用户名</label> <input type="text" class="form-control" th:value="${username}" name="username"/>
+                    </div>
+                    <div class="form-group">
+                        <label>地址</label> <input type="text" class="form-control" th:value="${address}" name="address"/>
+                    </div>
+                    <button type="submit" class="btn btn-primary">查询</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">用户信息列表</div>
+                    <!-- /.panel-heading -->
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>用户名</th>
+                            <th>性别</th>
+                            <th>电话</th>
+                            <th>地址</th>
+                            <th>电子邮箱</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user : ${pageInfo.list}">
+                            <td th:text="${user.id}"></td>
+                            <td th:text="${user.username}"></td>
+                            <td th:text="${user.genderStr}"></td>
+                            <td th:text="${user.phone}"></td>
+                            <td th:text="${user.address}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td width="100" height="50">
+                                <a href="#" class="btn btn-primary btn-xs" data-toggle="modal"
+                                   data-target="#editUserDialog"
+                                   th:onclick="'editUser('+${user.id}+')'">修改</a>
+                                <a href="#" class="btn btn-danger btn-xs"
+                                   th:onclick="'javascript:deleteUser('+${user.id}+')'">删除</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li>
+                        <a th:href="'/user/findAll?username='+${username}+'&address='+${address}" th:if="${pageInfo.pageNum==1}" class="disableClick">
+                            <span aria-hidden="true">首页</span>
+                        </a>
+                        <a th:href="'/user/findAll?username='+${username}+'&address='+${address}" th:if="${pageInfo.pageNum!=1}">
+                            <span aria-hidden="true">首页</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="'/user/findAll?username='+${username}+'&address='+${address}+'&pageNum='+${pageInfo.prePage}" aria-label="Previous"
+                           th:if="${pageInfo.pageNum==1}" class="disableClick">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                        <a th:href="'/user/findAll?username='+${username}+'&address='+${address}+'&pageNum='+${pageInfo.prePage}" aria-label="Previous"
+                           th:if="${pageInfo.pageNum!=1}">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li th:each="pageNum:${#numbers.sequence(1,pageInfo.pages)}">
+                        <a th:href="'/user/findAll?username='+${username}+'&address='+${address}+'&pageNum='+${pageNum}" th:text="${pageNum}" th:if="${pageNum eq pageInfo.pageNum}" th:style="'background: #6faed9;'"></a>
+                        <a th:href="'/user/findAll?username='+${username}+'&address='+${address}+'&pageNum='+${pageNum}" th:text="${pageNum}" th:if="${pageNum ne pageInfo.pageNum}"></a>
+                    </li>
+                    <li>
+                        <a th:href="'/user/findAll?username='+${username}+'&address='+${address}+'&pageNum='+${pageInfo.nextPage}" aria-label="Next"
+                           th:if="${pageInfo.pageNum==pageInfo.pages}" class="disableClick">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                        <a th:href="'/user/findAll?username='+${username}+'&address='+${address}+'&pageNum='+${pageInfo.nextPage}" aria-label="Next"
+                           th:if="${pageInfo.pageNum!=pageInfo.pages}">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="'/user/findAll?username='+${username}+'&address='+${address}+'&pageNum='+${pageInfo.pages}"
+                           th:if="${pageInfo.pageNum==pageInfo.pages}" class="disableClick">
+                            <span aria-hidden="true">尾页</span>
+                        </a>
+                        <a th:href="'/user/findAll?username='+${username}+'&address='+${address}+'&pageNum='+${pageInfo.pages}"
+                           th:if="${pageInfo.pageNum!=pageInfo.pages}">
+                            <span aria-hidden="true">尾页</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <!-- 列表查询部分  end-->
+</div>
+<!-- 修改个人信息模态框 -->
+<div class="modal fade" id="editMyinfoDialog" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">个人信息</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="edit_myinfo_form">
+                    <input type="hidden" id="edit_myid" name="id"/>
+                    <div class="form-group">
+                        <label for="edit_myusername" class="col-sm-2 control-label">用户名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit_myusername" name="username"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_myphone" class="col-sm-2 control-label"> 电话</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit_myphone" name="phone"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_myaddress" class="col-sm-2 control-label"> 地址</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit_myaddress" name="address"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_myemail" class="col-sm-2 control-label"> 电子邮箱</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit_myemail" name="email"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary"
+                        th:onclick="updateMyinfo()">保存修改
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--修改密码模态框-->
+<div class="modal fade" id="modifyPasswordDialog" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel3">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel3">修改密码</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="modify_password_form">
+                    <input type="hidden" name="account" th:value="${session.user.account}"/>
+                    <div class="form-group">
+                        <label for="old_password" class="col-sm-2 control-label">旧密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="old_password" name="oldpwd"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_password" class="col-sm-2 control-label"> 新密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="new_password" name="newpwd"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_password1" class="col-sm-2 control-label"> 确认密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="new_password1"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary"
+                        th:onclick="modifyPassword()">保存修改
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--修改用户信息模态框-->
+<div class="modal fade" id="editUserDialog" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel1">修改用户信息</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="edit_user_form">
+                    <input type="hidden" id="edit_user_id" name="id"/>
+                    <div class="form-group">
+                        <label for="edit_user_username" class="col-sm-2 control-label">用户名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit_user_username" name="username"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_user_phone" class="col-sm-2 control-label"> 电话</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit_user_phone" name="phone"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_user_address" class="col-sm-2 control-label"> 地址</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit_user_address" name="address"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_user_email" class="col-sm-2 control-label"> 电子邮箱</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit_user_email" name="email"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary"
+                        th:onclick="updateUser()">保存修改
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/metisMenu.min.js"></script>
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap.min.js"></script>
+<script src="/js/sb-admin-2.js"></script>
+<script type="text/javascript">
+
+    //通过id获取用户信息
+    function editUser(id) {
+        $.ajax({
+            type:"get",
+            url:"/user/update",
+            data:{"id":id},
+            success:function(data){
+                $("#edit_user_id").val(data.id);
+                $("#edit_user_username").val(data.username);
+                $("#edit_user_phone").val(data.phone);
+                $("#edit_user_address").val(data.address);
+                $("#edit_user_email").val(data.email);
+            }
+        });
+    }
+
+    //执行修改用户信息操作
+    function updateUser() {
+        var username = $("#edit_user_username");
+        var phone = $("#edit_user_phone");
+        var email = $("#edit_user_email");
+        var address = $("#edit_user_address");
+        var usernamepatt = /^[a-zA-Z_\u4e00-\u9fa5][a-zA-Z0-9_\u4e00-\u9fa5]*$/;
+        var emailpatt = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+        var msg = "";
+        if (username.val().length < 2 | username.val().length > 10 | !usernamepatt.test(username.val())) {
+            msg = "用户名只能包含中文、字母、数字和下划线，且不能以数字开头，长度为2-10！";
+        } else if (phone.val().length != 11) {
+            msg = "请输入11位数字的电话号码！";
+        } else if (address.val()== "") {
+            msg = "请输入地址！";
+        }else if (!emailpatt.test(email.val())) {
+            msg = "请输入正确的邮箱格式！";
+        }
+        if (msg != "") {
+            alert(msg);
+        } else {
+            $.post("/user/update", $("#edit_user_form").serialize(), function (data) {
+                if (data == "ok") {
+                    alert("用户信息修改成功！");
+                    location.reload();
+                } else {
+                    alert("用户信息修改失败！");
+                }
+            });
+        }
+    }
+
+    // 通过id获取个人信息
+    function editMyinfo(id) {
+        $.ajax({
+            type: "get",
+            url: "/user/update",
+            data: {"id": id},
+            success: function (data) {
+                $("#edit_myid").val(data.id);
+                $("#edit_myusername").val(data.username);
+                $("#edit_myphone").val(data.phone);
+                $("#edit_myaddress").val(data.address);
+                $("#edit_myemail").val(data.email);
+            }
+        });
+    }
+
+    // 执行修改个人信息操作
+    function updateMyinfo() {
+        var username = $("#edit_myusername");
+        var phone = $("#edit_myphone");
+        var address = $("#edit_myaddress");
+        var email = $("#edit_myemail");
+        var usernamepatt = /^[a-zA-Z_\u4e00-\u9fa5][a-zA-Z0-9_\u4e00-\u9fa5]*$/;
+        var emailpatt = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+        var msg = "";
+        if (username.val().length < 2 | username.val().length > 10 | !usernamepatt.test(username.val())) {
+            msg = "用户名只能包含中文、字母、数字和下划线，且不能以数字开头，长度为2-10！";
+        } else if (phone.val().length != 11) {
+            msg = "请输入11位数字的电话号码！";
+        }else if (address.val()== "") {
+            msg = "请输入地址！";
+        } else if (!emailpatt.test(email.val())) {
+            msg = "请输入正确的邮箱格式！";
+        }
+        if (msg != "") {
+            alert(msg);
+        } else {
+            $.post("/user/update", $("#edit_myinfo_form").serialize(), function (data) {
+                if (data == "ok") {
+                    alert("用户信息修改成功！请重新登录系统！");
+                    location.href="http://localhost:8080/user/logout";
+                } else {
+                    alert("用户信息修改失败！");
+                }
+            });
+        }
+    }
+
+    // 删除客户
+    function deleteUser(id) {
+        if (confirm('确实要删除该用户吗?')) {
+            $.post("/user/delete", {"id": id},
+                function (data) {
+                    if (data == "ok") {
+                        alert("用户删除成功！");
+                        window.location.reload();
+                    } else {
+                        alert("删除失败，该用户存在托管记录！");
+                        window.location.reload();
+                    }
+                });
+        }
+    }
+
+    //修改密码
+    function modifyPassword() {
+        var oldword = $("#old_password");
+        var password = $("#new_password");
+        var password1 = $("#new_password1");
+        var pattern = /^[a-zA-Z][a-zA-Z0-9_]*$/;
+        var msg = "";
+        if (oldword.val() == "") {
+            msg = "请输入旧密码！";
+            oldword.focus();
+        } else if (password.val() == "") {
+            msg = "请输入新密码！";
+            password.focus();
+        } else if (password.val().length < 5 | password.val().length > 10 | !pattern.test(password.val())) {
+            msg = "密码长度须为5-10个字符，且以字母开头，只能包含字母、数字、下划线！";
+            password.focus();
+        } else if (password.val() != password1.val()) {
+            msg = "两次输入的密码不一致！";
+            password1.focus();
+        }
+        if (msg != "") {
+            alert(msg);
+        } else {
+            $.post("/user/modifyPassword", $("#modify_password_form").serialize(), function (data) {
+                if (data == "ok") {
+                    alert("密码修改成功！");
+                    location.reload();
+                } else {
+                    alert("密码修改失败，旧密码错误，请重新输入！");
+                    oldword.focus();
+                }
+            });
+        }
+    }
+
+</script>
+</body>
+</html>

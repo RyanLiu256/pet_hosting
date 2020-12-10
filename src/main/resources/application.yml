@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pethosting?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+    username: root
+    password: root
+    thymeleaf:
+      prefix: classpath:/tempaltes/
+      suffix: .html
+      code: HTML5
+      encoding: utf-8
+      content-type: text/html
+      cache: false
+mybatis:
+  type-aliases-package: edu.guat.po
+  mapper-location: classpath:edu/guat/mapper/*Mapper.xml
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+logging:
+  level:
+    edu:
+      guat:
+        mapper: debug

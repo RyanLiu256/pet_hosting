@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.guat.mapper.BreedsMapper">
+
+    <select id="selectAll" resultType="Breeds">
+        SELECT * FROM tb_breeds
+    </select>
+
+    <select id="selectByPage" resultType="Breeds">
+        SELECT * FROM tb_breeds
+    </select>
+
+    <select id="selectById" parameterType="Integer" resultType="Breeds">
+        SELECT * FROM tb_breeds WHERE bid = #{id}
+    </select>
+
+    <update id="update" parameterType="Breeds">
+        UPDATE tb_breeds SET species = #{species} , breedPrice = #{breedPrice} WHERE bid = #{bid}
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        DELETE FROM tb_breeds WHERE bid = #{id}
+    </delete>
+
+    <insert id="add" parameterType="Breeds">
+        INSERT INTO tb_breeds (species,breedPrice,picture) VALUES (#{species},#{breedPrice},#{picture})
+    </insert>
+
+    <select id="updatePicture">
+        UPDATE tb_breeds SET picture = #{picture} WHERE bid = #{bid}
+    </select>
+
+</mapper>

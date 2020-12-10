@@ -1,0 +1,508 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>宠物托管服务系统</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/metisMenu.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/dataTables.bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{/css/sb-admin-2.css}" rel="stylesheet"/>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/boot-crm.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        .disableClick {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        #pet_img {
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <!-- 导航栏部分 -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation"
+         style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#" th:if="${session.user.status==1}">宠物托管服务后台管理系统 </a>
+            <a class="navbar-brand" href="#" th:if="${session.user.status==0}">宠物托管服务管理系统 </a>
+        </div>
+        <!-- 导航栏右侧图标部分 -->
+        <ul class="nav navbar-top-links navbar-right">
+            <!-- 用户信息和系统设置 start -->
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
+                    class="fa fa-user fa-fw"></i>
+                <i class="fa fa-caret-down"></i>
+            </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a href="#"><i class="fa fa-user fa-fw"> </i>用户：<span th:text="${session.user.username}"/>
+                    </a></li>
+                    <li class="divider"></li>
+                    <li><a href="/user/logout"> <i class="fa fa-sign-out fa-fw"></i>退出登录</a></li>
+                </ul>
+            </li>
+            <!-- 用户信息和系统设置结束 -->
+        </ul>
+        <!-- 左侧显示列表部分 start-->
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==0}">
+                <ul class="nav">
+                    <li><a href="/"> <i class="fa fa-edit fa-fw"></i> 首页</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/user/findAll"> <i class="fa fa-edit fa-fw"></i> 用户管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/deposit/findAll"> <i class="fa fa-edit fa-fw"></i> 托管管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav">
+                    <li><a th:href="'/breeds/findAll'"> <i class="fa fa-edit fa-fw"></i> 宠物品种管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav">
+                    <li><a th:href="'/petfood/findAll'"> <i class="fa fa-edit fa-fw"></i> 宠物粮食管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav">
+                    <li><a th:href="'/service/findAll'"> <i class="fa fa-edit fa-fw"></i> 宠物服务管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav">
+                    <li><a th:href="'/keeper/findAll'"> <i class="fa fa-edit fa-fw"></i> 托管负责人管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/findBreedsByMonth"> <i class="fa fa-edit fa-fw"></i> 宠物品种托管个数及收益统计图</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/findPetfoodByMonth"> <i class="fa fa-edit fa-fw"></i> 宠物粮食被选次数及收益统计图</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/findServiceByMonth"> <i class="fa fa-edit fa-fw"></i> 宠物服务被选次数及收益统计图</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/findByYear"> <i class="fa fa-edit fa-fw"></i> 每月收益统计图</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" >
+                <ul class="nav">
+                    <li><a href="/deposit/commentlist"> <i class="fa fa-edit fa-fw"></i> 用户评价</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/system/tobackup"> <i class="fa fa-edit fa-fw"></i> 数据库备份</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==0}">
+                <ul class="nav">
+                    <li><a th:href="'/deposit/mydeposit?userid='+${session.user.id}" class="active"> <i
+                            class="fa fa-edit fa-fw"></i> 我的托管</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==0}">
+                <ul class="nav">
+                    <li><a href="#" data-toggle="modal"
+                           data-target="#addDepositDialog"> <i class="fa fa-edit fa-fw"></i> 我要托管</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- 左侧显示列表部分 end-->
+    </nav>
+    <!-- 列表查询部分  start-->
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">用户评价</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div>
+                    <p class="lead">
+                        <span th:text="${comment.dayStr}"/><br><br>
+                        用户评价：<span th:text="${comment.comment}"/>
+                        <a href="#" data-toggle="modal" data-target="#editComment"
+                           th:onclick="'javascript:editComment('+${comment.cid}+')'"
+                           th:if="${session.user.status==0 && comment.comment != null}">修改</a>
+                        <a href="#" data-toggle="modal" data-target="#addReply"
+                           th:if="${session.user.status==1 && comment.reply == null}">回复</a>
+                    </p>
+                    <p class="lead">
+                        <span th:text="'回复：'+${comment.reply}" th:if="${comment.reply!=null}"/>
+                        <a href="#" data-toggle="modal" data-target="#editReply"
+                           th:onclick="'javascript:editReply('+${comment.cid}+')'"
+                           th:if="${session.user.status==1 && comment.reply != null}">修改</a>
+                    </p>
+                    <div class="col-xs-6">
+                        <a href="javascript:history.back(-1)" class="btn btn-default">返回</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--修改评价-->
+<div class="modal fade" id="editComment" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel2">修改评价</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="edit_comment_form">
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="edit_comment" name="comment" rows="5"
+                                      style="min-width: 100%"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary"
+                        th:onclick="'javascript:changeComment('+${comment.cid}+')'">提交
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--回复评价-->
+<div class="modal fade" id="addReply" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">回复评价</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="add_reply_form">
+                    <!--                    <input type="hidden" id="edit_myid" name="id"/>-->
+                    <div class="form-group">
+                        <!--                        <label for="edit_myusername" class="col-sm-2 control-label">用户名</label>-->
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="reply" name="reply" rows="5"
+                                      style="min-width: 100%"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary"
+                        th:onclick="'javascript:addReply('+${comment.cid}+')'">提交
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--修改回复-->
+<div class="modal fade" id="editReply" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel1">修改回复</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="edit_reply_form">
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="edit_reply" name="reply" rows="5"
+                                      style="min-width: 100%"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary"
+                        th:onclick="'javascript:changeReply('+${comment.cid}+')'">提交
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--添加托管信息模态框-->
+<div class="modal fade" id="addDepositDialog" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">托管信息</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="add_deposit_form">
+                    <input type="hidden" name="username" th:value="${session.user.username}">
+                    <div class="form-group">
+                        <label for="add_petname" class="col-sm-2 control-label">宠物昵称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="add_petname" name="petname"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"> 宠物品种</label>
+                        <div class="col-sm-10">
+                            <select id="add_breeds" name="breeds.bid" class="form-control">
+                                <option value="">--请选择--</option>
+                                <option th:each="breeds : ${session.breeds}" th:value="${breeds.bid}"
+                                        th:text="${breeds.species+'&nbsp;&nbsp;&nbsp;&nbsp;'+breeds.breedPrice+'(元/天)'}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"> 宠物粮食</label>
+                        <div class="col-sm-10">
+                            <select id="add_petfood" name="petFood.pid" class="form-control">
+                                <option value="">--请选择--</option>
+                                <option th:each="petFood : ${session.petFoods}" th:value="${petFood.pid}"
+                                        th:text="${petFood.brand+'&nbsp;&nbsp;&nbsp;&nbsp;'+petFood.price+'(元/天)'}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"> 宠物负责人</label>
+                        <div class="col-sm-10">
+                            <select id="add_keeper" name="keeper.kid" class="form-control">
+                                <option value="">--请选择--</option>
+                                <option th:each="keeper : ${session.keepers}" th:value="${keeper.kid}"
+                                        th:text="${keeper.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="add_startTime" class="col-sm-2 control-label"> 入住时间</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="add_startTime" name="startTime"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="add_endTime" class="col-sm-2 control-label"> 领回时间</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="add_endTime" name="endTime"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="services" class="col-sm-2 control-label">选择服务</label>
+                        <div class="col-sm-10">
+                            <input type="checkbox" id="services" th:each="service : ${session.services}"
+                                   th:name="'services['+${service.id}+'].id'"
+                                   th:value="${service.id}"
+                                   th:text="${service.serviceName}"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" th:onclick="addDeposit()">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/metisMenu.min.js"></script>
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap.min.js"></script>
+<script src="/js/sb-admin-2.js"></script>
+<script type="text/javascript">
+
+    function addReply(cid) {
+        var msg = "";
+        var reply = $("#reply").val();
+        if (reply == "" | reply.length > 255) {
+            msg = "请输入255个字符以内的回复！";
+        }
+        if (msg != "") {
+            alert(msg);
+        } else {
+            $.ajax({
+                type: "post",
+                url: "/deposit/addReply",
+                data: {"cid": cid, "reply": reply},
+                success: function (data) {
+                    if (data == "ok") {
+                        alert("回复成功！");
+                        location.reload();
+                    } else {
+                        alert("回复失败！");
+                    }
+                }
+            });
+        }
+    }
+
+    function editReply(cid) {
+        $.ajax({
+            type: "post",
+            url: "/deposit/findCommentByCid",
+            data: {"cid": cid},
+            success:function (data) {
+                $("#edit_reply").val(data.reply);
+            }
+        });
+    }
+
+    function changeReply(cid) {
+        var msg = "";
+        var reply = $("#edit_reply").val();
+        if (reply == "" | reply.length > 255) {
+            msg = "请输入255个字符以内的回复！";
+        }
+        if (msg != "") {
+            alert(msg);
+        } else {
+            $.ajax({
+                type: "post",
+                url: "/deposit/changeReply",
+                data: {"cid": cid, "reply": reply},
+                success: function (data) {
+                    if (data == "ok") {
+                        alert("修改成功！");
+                        location.reload();
+                    } else {
+                        alert("修改失败！");
+                    }
+                }
+            });
+        }
+    }
+
+    function editComment(cid) {
+        $.ajax({
+            type: "post",
+            url: "/deposit/findCommentByCid",
+            data: {"cid": cid},
+            success:function (data) {
+                $("#edit_comment").val(data.comment);
+            }
+        });
+    }
+
+    function changeComment(cid) {
+        var msg = "";
+        var comment = $("#edit_comment").val();
+        if (comment == "" | comment.length > 255) {
+            msg = "请输入255个字符以内的评价！";
+        }
+        if (msg != "") {
+            alert(msg);
+        } else {
+            $.ajax({
+                type: "post",
+                url: "/deposit/changeComment",
+                data: {"cid": cid, "comment": comment},
+                success: function (data) {
+                    if (data == "ok") {
+                        alert("修改成功！");
+                        location.reload();
+                    } else {
+                        alert("修改失败！");
+                    }
+                }
+            });
+        }
+    }
+
+    //申请托管
+    function addDeposit() {
+        var msg = "";
+        var petname = $("#add_petname");
+        var breeds = $("#add_breeds");
+        var petfood = $("#add_petfood");
+        var keeper = $("#add_keeper");
+        var startTime = $("#add_startTime");
+        var endTime = $("#add_endTime");
+        var startTimeDate = new Date(startTime.val().replace("-", "/").replace("-", "/"));
+        var endTimeDate = new Date(endTime.val().replace("-", "/").replace("-", "/"));
+        if (petname.val() == "" | petname.val().length > 6) {
+            msg = "请输入6个字符以内的宠物昵称！";
+        } else if (breeds.val() == "") {
+            msg = "请选择宠物品种！";
+        } else if (petfood.val() == "") {
+            msg = "请选择宠物粮食品牌！";
+        } else if (keeper.val() == "") {
+            msg = "请选择托管负责人！";
+        } else if (startTime.val() == "") {
+            msg = "请选择入住时间！";
+        } else if (endTime.val() == "") {
+            msg = "请选择领回时间！";
+        } else if (startTimeDate > endTimeDate) {
+            msg = "入住时间不能在领回时间之后！";
+        }
+        if (msg != "") {
+            alert(msg);
+        } else {
+            $.post("/deposit/addDeposit", $("#add_deposit_form").serialize(), function (date) {
+                if (date == "ok") {
+                    alert("申请托管成功！");
+                    window.location.reload();
+                } else {
+                    alert("申请托管失败！");
+                    window.location.reload();
+                }
+            });
+        }
+    }
+
+    $(function () {
+        //得到当前时间
+        var date_now = new Date();
+        //得到当前年份
+        var year = date_now.getFullYear();
+        //得到当前月份
+        //注：
+        //  1：js中获取Date中的month时，会比当前月份少一个月，所以这里需要先加一
+        //  2: 判断当前月份是否小于10，如果小于，那么就在月份的前面加一个 '0' ， 如果大于，就显示当前月份
+        var month = date_now.getMonth() + 1 < 10 ? "0" + (date_now.getMonth() + 1) : (date_now.getMonth() + 1);
+        //得到当前日子（多少号）
+        var date = date_now.getDate() < 10 ? "0" + date_now.getDate() : date_now.getDate();
+        //设置input标签的min属性
+        $("#add_startTime").attr("min", year + "-" + month + "-" + date);
+        $("#add_endTime").attr("min", year + "-" + month + "-" + date);
+        $("#edit_startTime").attr("min", year + "-" + month + "-" + date);
+        $("#edit_endTime").attr("min", year + "-" + month + "-" + date);
+    })
+</script>
+</body>
+</html>

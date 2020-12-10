@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.guat.mapper.KeeperMapper">
+
+    <select id="selectAll" resultType="Keeper">
+        SELECT * FROM tb_keeper
+    </select>
+
+    <select id="selectByPage" resultType="Keeper">
+        SELECT * FROM tb_keeper
+    </select>
+
+    <select id="selectById" parameterType="Integer" resultType="Keeper">
+        SELECT * FROM tb_keeper WHERE kid = #{kid}
+    </select>
+
+    <update id="update" parameterType="Keeper">
+        UPDATE tb_keeper SET name = #{name}, phone = #{phone}, description = #{description},sex = #{sex} WHERE kid = #{kid}
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        DELETE FROM tb_keeper WHERE kid = #{kid}
+    </delete>
+
+    <insert id="add" parameterType="Keeper">
+        INSERT INTO tb_keeper (name,sex,phone,description,picture) VALUES (#{name},#{sex},#{phone},#{description},#{picture})
+    </insert>
+
+    <update id="updatePicture" parameterType="Keeper">
+        update tb_keeper set picture = #{picture} where kid = #{kid}
+    </update>
+
+</mapper>

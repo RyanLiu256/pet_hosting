@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.guat.mapper.UserMapper">
+
+    <resultMap id="userMap" type="User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="account" column="account"/>
+        <result property="password" column="password"/>
+        <result property="gender" column="gender"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="address" column="address"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <!--  登录  -->
+    <select id="select" parameterType="User" resultMap="userMap">
+        SELECT * FROM tb_user WHERE account = #{account};
+    </select>
+
+    <!--  注册  -->
+    <insert id="insert" parameterType="User">
+        INSERT INTO tb_user (username,account,password,gender,phone,address,email,status)VALUES (#{username},#{account},#{password},#{gender},#{phone},#{address},#{email},#{status});
+    </insert>
+
+    <!--  查询用户列表  -->
+    <select id="selectAll" resultMap="userMap">
+        SELECT * FROM tb_user WHERE id != 1
+        <if test="id !=null and id!=''">
+            AND id = #{id}
+        </if>
+        AND username LIKE concat('%',#{username},'%')
+        AND address LIKE concat('%',#{address},'%')
+    </select>
+
+    <!--  通过id查询  -->
+    <select id="selectById" parameterType="Integer" resultMap="userMap">
+        SELECT * FROM tb_user WHERE id = #{id};
+    </select>
+
+    <update id="update" parameterType="User">
+        UPDATE tb_user SET username = #{username}, phone = #{phone},address = #{address}, email = #{email} WHERE id = #{id};
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        DELETE FROM tb_user WHERE id = #{id};
+    </delete>
+
+    <!--  修改密码  -->
+    <update id="updatePassword" parameterType="User">
+        UPDATE tb_user SET password = #{password} WHERE username = #{username};
+    </update>
+
+    <!--  找回密码  -->
+    <select id="selectForUpdatePwd" parameterType="User" resultType="User">
+        SELECT * FROM tb_user WHERE username = #{username} AND account = #{account} AND phone = #{phone} AND email = #{email}
+    </select>
+
+</mapper>

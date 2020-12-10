@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.guat.mapper.DepositMapper">
+    <resultMap id="depositMap" type="Deposit">
+        <id property="id" column="id"/>
+        <result property="userid" column="userid"/>
+        <result property="username" column="username"/>
+        <result property="petname" column="petname"/>
+        <result property="age" column="age"/>
+        <result property="weight" column="weight"/>
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="dayCount" column="day_count"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="state" column="state"/>
+        <result property="ispay" column="ispay"/>
+        <result property="isprove" column="isprove"/>
+        <result property="reason" column="reason"/>
+        <association property="breeds" column="species_id" javaType="Breeds">
+            <id property="bid" column="bid"/>
+            <result property="species" column="species"/>
+            <result property="breedPrice" column="breedPrice"/>
+            <result property="picture" column="picture"/>
+        </association>
+        <association property="petFood" column="food_id" javaType="PetFood">
+            <id property="pid" column="pid"/>
+            <result property="brand" column="brand"/>
+            <result property="price" column="price"/>
+        </association>
+        <association property="keeper" column="keeper_id" javaType="Keeper">
+            <id property="kid" column="kid"/>
+            <result property="name" column="name"/>
+            <result property="sex" column="sex"/>
+            <result property="phone" column="phone"/>
+            <result property="description" column="description"/>
+        </association>
+        <association property="comment" column="comment_id" javaType="Comment">
+            <id property="cid" column="cid"/>
+            <result property="comment" column="comment" />
+            <result property="reply" column="reply" />
+            <result property="day" column="day" />
+        </association>
+    </resultMap>
+
+    <select id="selectAll" resultMap="depositMap">
+        SELECT d.id,d.userid,d.username,d.petname,d.startTime,d.endTime,d.state,d.ispay,b.picture,b.species
+        FROM tb_deposit d,tb_breeds b,tb_petfood p,tb_keeper k
+        WHERE d.species_id = b.bid
+        AND d.food_id = p.pid
+        AND d.keeper_id = k.kid
+        AND username LIKE concat('%',#{username},'%')
+        <if test="userid!=null and userid !=''">
+            AND userid = #{userid}
+        </if>
+        <if test="year!=null and year !=''">
+            AND year(d.startTime) = #{year}
+        </if>
+        <if test="month!=null and month !=''">
+            AND month(d.startTime) = #{month}
+        </if>
+        <if test="state!=null and state !=''">
+            AND state = #{state}
+        </if>
+        <if test="ispay!=null and ispay !=''">
+            AND ispay = #{ispay}
+        </if>
+    </select>
+
+    <select id="selectById" parameterType="Integer" resultMap="depositMap">
+        SELECT
+        d.id,
+        d.userid,
+        d.username,
+        d.petname,
+        d.age,
+        d.weight,
+        d.startTime,
+        d.endTime,
+        d.total_price,
+        d.day_count,
+        d.state,
+        d.ispay,
+        d.isprove,
+        d.reason,
+        b.bid,
+        b.species,
+        b.breedPrice,
+        p.pid,
+        p.brand,
+        p.price,
+        k.kid,
+        k.name,
+        k.sex,
+        k.phone,
+        k.description
+        FROM tb_deposit d,tb_breeds b,tb_petfood p, tb_keeper k
+        WHERE d.species_id = b.bid
+        AND d.food_id = p.pid
+        AND d.keeper_id = k.kid
+        AND d.id=#{id};
+    </select>
+
+    <delete id="deleteById" parameterType="Integer">
+        DELETE FROM tb_deposit WHERE id = #{id}
+    </delete>
+
+    <select id="selectMydeposit" resultMap="depositMap">
+        SELECT d.id,d.username,d.petname,d.startTime,d.endTime,d.day_count,d.total_price,d.state,d.ispay,d.isprove,b.species,b.picture,p.brand
+        FROM tb_deposit d,tb_breeds b,tb_petfood p
+        WHERE d.species_id = b.bid
+        AND d.food_id = p.pid
+        AND d.userid = #{userid}
+        AND d.petname LIKE concat('%',#{petname},'%')
+    </select>
+
+    <insert id="addDeposit" useGeneratedKeys="true" keyProperty="id" parameterType="Deposit">
+        <!-- 配置插入操作后获取插入数据的id -->
+        <selectKey keyProperty="id" keyColumn="id" resultType="Integer" order="AFTER">
+            SELECT last_insert_id();
+        </selectKey>
+        INSERT INTO tb_deposit (userid,username,petname,age,weight,startTime,endTime,day_count,total_price,species_id,food_id,keeper_id,isprove)
+        VALUES (#{userid},#{username},#{petname},#{age},#{weight},#{startTime},#{endTime},#{dayCount},#{totalPrice},#{breeds.bid},#{petFood.pid},#{keeper.kid},#{isprove});
+    </insert>
+
+    <update id="updateDeposit" parameterType="Deposit">
+        UPDATE tb_deposit
+        SET
+        petname=#{petname},
+        age = #{age},
+        weight = #{weight},
+        startTime=#{startTime},
+        endTime = #{endTime},
+        day_count=#{dayCount},
+        total_price=#{totalPrice},
+        species_id=#{breeds.bid},
+        food_id = #{petFood.pid},
+        keeper_id = #{keeper.kid},
+        isprove = #{isprove}
+        WHERE id = #{id};
+    </update>
+
+    <update id="updatePrice">
+        UPDATE tb_deposit
+        SET total_price = #{totalPrice}
+        WHERE id = #{id};
+    </update>
+
+    <select id="selectBySpeciesId" parameterType="Integer" resultMap="depositMap">
+        SELECT * FROM tb_deposit WHERE species_id = #{speciesId}
+    </select>
+
+    <select id="selectByFoodId" parameterType="Integer" resultMap="depositMap">
+        SELECT * FROM tb_deposit WHERE food_id = #{foodId}
+    </select>
+
+    <select id="selectByServiceId" parameterType="Integer" resultMap="depositMap">
+        SELECT * FROM tb_deposit WHERE id IN (SELECT deposit_id FROM tb_deposit_service WHERE service_id = #{serviceId})
+    </select>
+
+    <update id="updateDepositState">
+        update tb_deposit set state = #{state} where id = #{id}
+    </update>
+
+    <update id="changePay" parameterType="Deposit">
+        update tb_deposit set ispay = #{ispay} where id = #{id}
+    </update>
+
+    <update id="reject">
+        update tb_deposit set state = #{state},reason = #{reason} where id = #{id}
+    </update>
+
+    <insert id="addComment" parameterType="Comment">
+        <selectKey keyProperty="cid" keyColumn="cid" resultType="Integer" order="AFTER">
+            SELECT last_insert_id();
+        </selectKey>
+        insert into tb_comment (comment) values (#{comment})
+    </insert>
+
+    <update id="addReply" parameterType="Comment">
+        update tb_comment set reply = #{reply} where cid = #{cid}
+    </update>
+
+    <update id="updateCommentId" parameterType="Integer">
+        update tb_deposit set comment_id = #{commentId} where id = #{id}
+    </update>
+
+    <select id="selectCommentById" parameterType="Integer" resultType="Comment">
+        SELECT c.* FROM tb_comment c,tb_deposit d WHERE c.cid = d.comment_id AND d.id = #{id}
+    </select>
+
+    <select id="selectCommentByCid" parameterType="Integer" resultType="Comment">
+        select * from tb_comment where cid = #{cid}
+    </select>
+
+    <select id="selectAllComment" resultMap="depositMap">
+        SELECT d.username,b.species,c.* FROM tb_comment c,tb_deposit d,tb_breeds b WHERE c.cid = d.comment_id AND d.species_id = b.bid
+    </select>
+
+    <update id="updateReply">
+        update tb_comment set reply = #{reply} where cid = #{cid}
+    </update>
+
+    <update id="updateComment">
+        update tb_comment set comment = #{comment} where cid = #{cid}
+    </update>
+
+</mapper>

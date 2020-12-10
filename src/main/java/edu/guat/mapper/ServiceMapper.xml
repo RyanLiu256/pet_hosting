@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.guat.mapper.ServiceMapper">
+
+    <select id="selectAll" resultType="Service">
+        SELECT id,service_name AS serviceName ,price, description FROM tb_service
+    </select>
+
+    <select id="selectByPage" resultType="Service">
+        SELECT id,service_name AS serviceName ,price, description FROM tb_service
+    </select>
+
+    <insert id="insertService">
+        INSERT INTO tb_deposit_service VALUES (#{depositId},#{serviceId})
+    </insert>
+
+    <select id="selectService" parameterType="Integer" resultType="Service">
+        SELECT s.id,s.service_name AS serviceName,s.price,s.description FROM tb_deposit d, tb_deposit_service ds,tb_service s WHERE
+        d.id = ds.deposit_id AND s.id=ds.service_id AND d.id = #{id}
+    </select>
+
+    <update id="updateService">
+        UPDATE tb_deposit_service SET deposit_id=#{depositId},service_id=#{serviceId}
+    </update>
+
+    <delete id="deleteService" parameterType="Integer">
+        DELETE FROM tb_deposit_service WHERE deposit_id=#{depositId}
+    </delete>
+
+    <select id="selectById" parameterType="Integer" resultType="Service">
+        SELECT id,service_name AS serviceName ,price, description FROM tb_service WHERE id = #{id}
+    </select>
+
+    <update id="update" parameterType="Service">
+        UPDATE tb_service SET service_name = #{serviceName},price = #{price},description=#{description} WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        DELETE FROM tb_service WHERE id = #{id}
+    </delete>
+
+    <insert id="add" parameterType="Service">
+        INSERT INTO tb_service (service_name,price,description) VALUES (#{serviceName},#{price},#{description})
+    </insert>
+
+</mapper>

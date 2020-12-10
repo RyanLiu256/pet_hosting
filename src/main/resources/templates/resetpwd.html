@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>宠物托管服务系统</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/metisMenu.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/dataTables.bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{/css/sb-admin-2.css}" rel="stylesheet"/>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/boot-crm.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        .disableClick {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <!-- 导航栏部分 -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation"
+         style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">宠物托管服务管理系统 </a>
+        </div>
+    </nav>
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">找回密码</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+            <form class="form-horizontal" id="resetpwd_form">
+                <div class="form-group">
+                    <label for="username" class="col-sm-2 control-label">用户名</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="用户名">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="account" class="col-sm-2 control-label">账号</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="account" name="account" placeholder="账号">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="phone" class="col-sm-2 control-label">联系电话</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="联系电话">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-2 control-label">电子邮箱</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="email" name="email" placeholder="电子邮箱">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="newpwd" class="col-sm-2 control-label">新密码</label>
+                    <div class="col-sm-5">
+                        <input type="password" class="form-control" id="newpwd" name="password" placeholder="新密码">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="newpwd1" class="col-sm-2 control-label">确认密码</label>
+                    <div class="col-sm-5">
+                        <input type="password" class="form-control" id="newpwd1" placeholder="确认密码">
+                    </div>
+                </div>
+                <div class="form-group">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button type="button" class="btn btn-primary" th:onclick="resetpwd()">提交</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="javascript:history.back(-1)" class="btn btn-default">返回</a>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+</div>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/metisMenu.min.js"></script>
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap.min.js"></script>
+<script src="/js/sb-admin-2.js"></script>
+<script type="text/javascript">
+    function resetpwd() {
+        var username = $("#username");
+        var account = $("#account");
+        var phone = $("#phone");
+        var email = $("#email");
+        var password = $("#newpwd");
+        var password1 = $("#newpwd1");
+        var pattern = /^[a-zA-Z][a-zA-Z0-9_]*$/;
+        var msg = "";
+        if (username.val() == "") {
+            msg = "请输入用户名！";
+            username.focus();
+        }else if(account.val() == "") {
+            msg = "请输入账号！";
+            account.focus();
+        }else if(phone.val() == "") {
+            msg = "请输入联系电话！";
+            phone.focus();
+        }else if(email.val() == "") {
+            msg = "请输入电子邮箱！";
+            email.focus();
+        }else if(password.val() == "") {
+            msg = "请输入新密码！";
+            password.focus();
+        } else if (password.val().length < 5 | password.val().length > 10 | !pattern.test(password.val())) {
+            msg = "密码长度须为5-10个字符，且以字母开头，只能包含字母、数字、下划线！";
+            password.focus();
+        } else if (password.val() != password1.val()) {
+            msg = "两次输入的密码不一致！";
+            password1.focus();
+        }
+        if (msg != "") {
+            alert(msg);
+        } else {
+            $.post("/user/resetpwd", $("#resetpwd_form").serialize(), function (data) {
+                if (data == "ok") {
+                    alert("密码修改成功！");
+                    location.href="http://localhost:8080/";
+                } else {
+                    alert("密码修改失败，请检查各项信息是否正确！");
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>

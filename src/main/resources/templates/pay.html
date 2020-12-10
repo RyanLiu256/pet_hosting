@@ -1,0 +1,276 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>宠物托管服务系统</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/metisMenu.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/dataTables.bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{/css/sb-admin-2.css}" rel="stylesheet"/>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/boot-crm.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        .disableClick {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        #pet_img {
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <!-- 导航栏部分 -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation"
+         style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">后台管理系统 </a>
+        </div>
+        <!-- 导航栏右侧图标部分 -->
+        <ul class="nav navbar-top-links navbar-right">
+            <div class="btn-group" th:if="${session.user.status==1}">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    商品管理 <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="/breeds/findAll">宠物品种</a></li>
+                    <li><a href="/petfood/findAll">宠物粮食</a></li>
+                    <li><a href="/service/findAll">宠物服务</a></li>
+                </ul>
+            </div>
+            <!-- 用户信息和系统设置 start -->
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
+                    class="fa fa-user fa-fw"></i>
+                <i class="fa fa-caret-down"></i>
+            </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a href="#"><i class="fa fa-user fa-fw"> </i>用户：<span th:text="${session.user.username}" />
+                    </a></li>
+                    <li class="divider"></li>
+                    <li><a href="/user/logout"> <i class="fa fa-sign-out fa-fw"></i>退出登录</a></li>
+                </ul>
+            </li>
+            <!-- 用户信息和系统设置结束 -->
+        </ul>
+        <!-- 左侧显示列表部分 start-->
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==0}">
+                <ul class="nav">
+                    <li><a href="/"> <i class="fa fa-edit fa-fw"></i> 首页</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/user/findAll"> <i class="fa fa-edit fa-fw"></i> 用户管理</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="/deposit/findAll"> <i class="fa fa-edit fa-fw"></i> 托管管理</a></li>
+                </ul>
+            </div>
+<!--            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">-->
+<!--                <ul class="nav">-->
+<!--                    <li><a href="/system/analysis" > <i class="fa fa-edit fa-fw"></i> 托管概况</a></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==1}">
+                <ul class="nav">
+                    <li><a href="#" th:onclick="'javascript:backupdb()'"> <i class="fa fa-edit fa-fw"></i> 数据库备份</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==0}">
+                <ul class="nav">
+                    <li><a th:href="'/deposit/mydeposit?username='+${session.user.username}" class="active"> <i
+                            class="fa fa-edit fa-fw"></i> 我的托管</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-nav navbar-collapse" th:if="${session.user.status==0}">
+                <ul class="nav">
+                    <li><a href="#" data-toggle="modal"
+                           data-target="#addDepositDialog"> <i class="fa fa-edit fa-fw"></i> 我要托管</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- 左侧显示列表部分 end-->
+    </nav>
+    <!-- 列表查询部分  start-->
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">支付页面</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div>
+                    微信：
+                    <img src="/img/pay/weixin.png" width="200" height="200" />
+                    支付宝：
+                    <img src="/img/pay/zhifubao.jpg" width="200" height="200" /><br>
+                    <br>
+                    <br>
+                    <br>
+                    <div class="col-xs-6">
+                        <a href="javascript:history.back(-1)" class="btn btn-default">返回</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--添加托管信息模态框-->
+<div class="modal fade" id="addDepositDialog" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">托管信息</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="add_deposit_form">
+                    <input type="hidden" name="username" th:value="${session.user.username}">
+                    <div class="form-group">
+                        <label for="add_petname" class="col-sm-2 control-label">宠物昵称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="add_petname" name="petname"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"> 宠物品种</label>
+                        <div class="col-sm-10">
+                            <select id="add_breeds" name="breeds.bid" class="form-control">
+                                <option value="">--请选择--</option>
+                                <option th:each="breeds : ${session.breeds}" th:value="${breeds.bid}"
+                                        th:text="${breeds.species+'&nbsp;&nbsp;&nbsp;&nbsp;'+breeds.breedPrice+'(元/天)'}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"> 宠物粮食</label>
+                        <div class="col-sm-10">
+                            <select id="add_petfood" name="petFood.pid" class="form-control">
+                                <option value="">--请选择--</option>
+                                <option th:each="petFood : ${session.petFoods}" th:value="${petFood.pid}"
+                                        th:text="${petFood.brand+'&nbsp;&nbsp;&nbsp;&nbsp;'+petFood.price+'(元/天)'}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"> 宠物负责人</label>
+                        <div class="col-sm-10">
+                            <select id="add_keeper" name="keeper.kid" class="form-control">
+                                <option value="">--请选择--</option>
+                                <option th:each="keeper : ${session.keepers}" th:value="${keeper.kid}"
+                                        th:text="${keeper.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="add_startTime" class="col-sm-2 control-label"> 入住时间</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="add_startTime" name="startTime"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="add_endTime" class="col-sm-2 control-label"> 领回时间</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="add_endTime" name="endTime"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="services" class="col-sm-2 control-label">选择服务</label>
+                        <div class="col-sm-10">
+                            <input type="checkbox" id="services" th:each="service : ${session.services}"
+                                   th:name="'services['+${service.id}+'].id'"
+                                   th:value="${service.id}"
+                                   th:text="${service.serviceName}"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" th:onclick="addDeposit()">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/metisMenu.min.js"></script>
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap.min.js"></script>
+<script src="/js/sb-admin-2.js"></script>
+<script type="text/javascript">
+//数据库备份操作
+function backupdb() {
+    if (confirm('确实要进行数据库备份吗?')) {
+        $.ajax({
+            url: "/system/backupdb",
+            type: "post",
+            datatype: "json",
+            success: function (result) {
+                if (result == "ok") {
+                    alert("数据库备份成功！");
+                } else {
+                    alert("数据库备份失败！");
+                }
+            }
+        });
+    }
+}
+
+//申请托管
+function addDeposit() {
+    var msg = "";
+    var petname = $("#add_petname");
+    var breeds = $("#add_breeds");
+    var petfood = $("#add_petfood");
+    var keeper = $("#add_keeper");
+    var startTime = $("#add_startTime");
+    var endTime = $("#add_endTime");
+    var startTimeDate = new Date(startTime.val().replace("-", "/").replace("-", "/"));
+    var endTimeDate = new Date(endTime.val().replace("-", "/").replace("-", "/"));
+    if (petname.val() == "" | petname.val().length > 6) {
+        msg = "请输入6个字符以内的宠物昵称！";
+    } else if (breeds.val() == "") {
+        msg = "请选择宠物品种！";
+    } else if (petfood.val() == "") {
+        msg = "请选择宠物粮食品牌！";
+    } else if (keeper.val() == "") {
+        msg = "请选择托管负责人！";
+    } else if (startTime.val() == "") {
+        msg = "请选择入住时间！";
+    } else if (endTime.val() == "") {
+        msg = "请选择领回时间！";
+    } else if (startTimeDate > endTimeDate) {
+        msg = "入住时间不能在领回时间之后！";
+    }
+    if (msg != "") {
+        alert(msg);
+    } else {
+        $.post("/deposit/addDeposit", $("#add_deposit_form").serialize(), function (date) {
+            if (date == "ok") {
+                alert("申请托管成功！");
+                window.location.reload();
+            } else {
+                alert("申请托管失败！");
+                window.location.reload();
+            }
+        });
+    }
+}
+</script>
+</body>
+</html>
