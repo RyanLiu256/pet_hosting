@@ -3,4 +3,5 @@
   运行环境：
     java 1.8，mysql 5.7，eclipse，spring boot 2.0                                                                                                                                        
   管理员的账号密码都是admin，普通用户张三的账号密码为：zhangsan和zhangsan123（好像是，不太记得了）
+  
   运行截图及更详细内容请看用户手册                                                                                                                                                              
